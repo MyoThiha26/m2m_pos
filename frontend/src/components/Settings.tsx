@@ -1,11 +1,11 @@
 import Layout from "./Layout";
 
-const Addons = () => {
+const Settings = () => {
   return (
     <Layout>
-      <h1>Addons Page</h1>
+      <h1>Settings Page</h1>
     </Layout>
   );
 };
 
-export default Addons;
+export default Settings;
