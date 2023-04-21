@@ -1,5 +1,11 @@
+import Layout from "./Layout";
+
 const MenuCategories = () => {
-  return <h1>MenuCategories Page</h1>;
+  return (
+    <Layout>
+      <h1>MenuCategories Page</h1>
+    </Layout>
+  );
 };
 
 export default MenuCategories;

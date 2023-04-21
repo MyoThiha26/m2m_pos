@@ -1,5 +1,11 @@
+import Layout from "./Layout";
+
 const AddonCategories = () => {
-  return <h1>AddonCategories Page</h1>;
+  return (
+    <Layout>
+      <h1>AddonCategories Page</h1>
+    </Layout>
+  );
 };
 
 export default AddonCategories;
