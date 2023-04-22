@@ -1,7 +1,7 @@
 interface Config {
-  apiUrl: string;
+  apiBaseUrl: string;
 }
 
 export const config: Config = {
-  apiUrl: process.env.REACT_APP_API_URL || "",
+  apiBaseUrl: process.env.REACT_APP_API_BASE_URL || "",
 };

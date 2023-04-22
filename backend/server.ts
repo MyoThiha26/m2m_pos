@@ -5,9 +5,18 @@ const app = express();
 const port = 5000;
 
 app.use(cors());
+app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
+});
+
+app.post("/menus", async (req: Request, res: Response) => {
+  const { name, price } = req.body;
+  const text = "INSERT INTO menus(name, price) VALUES($1, $2) RETURNING *";
+  const values = [name, price];
+  const result = await db.query(text, values);
+  res.send({ result });
 });
 
 app.get("/data", async (req: Request, res: Response) => {
