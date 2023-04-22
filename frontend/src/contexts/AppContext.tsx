@@ -1,12 +1,13 @@
-import { createContext } from "vm";
+import { config } from "../config/config";
 import { Addon, AddonCategory, Menu, MenuCategory } from "../typings/types";
-import { useContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 interface AppContextType {
   menus: Menu[];
   menuCategories: MenuCategory[];
   addons: Addon[];
   addonCategories: AddonCategory[];
+  updateData: (value: any) => void;
 }
 
 const defaultContext: AppContextType = {
@@ -14,15 +15,33 @@ const defaultContext: AppContextType = {
   menuCategories: [],
   addons: [],
   addonCategories: [],
+  updateData: () => {},
 };
 
-export const AppContext = createContext(defaultContext);
+export const AppContext = createContext<AppContextType>(defaultContext);
 
 const AppProvider = (props: any) => {
   const [data, updateData] = useState(defaultContext);
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const response = await fetch(`${config.apiUrl}/data`);
+    const responseJson = await response.json();
+    const { menus, menuCategories, addons, addonCategories } = responseJson;
+    updateData({
+      ...data,
+      menus: menus,
+      menuCategories,
+      addons,
+      addonCategories,
+    });
+  };
+
   return (
-    <AppContext.Provider value={{ ...data }}>
+    <AppContext.Provider value={{ ...data, updateData }}>
       {props.children}
     </AppContext.Provider>
   );

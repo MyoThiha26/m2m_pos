@@ -1,7 +1,12 @@
 import { Box, Button, TextField } from "@mui/material";
 import Layout from "./Layout";
+import { useContext } from "react";
+import { AppContext } from "../contexts/AppContext";
 
 const Menus = () => {
+  const appData = useContext(AppContext);
+  console.log(appData);
+
   return (
     <Layout>
       <Box
