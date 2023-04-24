@@ -8,6 +8,7 @@ interface AppContextType {
   addons: Addon[];
   addonCategories: AddonCategory[];
   updateData: (value: any) => void;
+  fetchData: () => void;
 }
 
 const defaultContext: AppContextType = {
@@ -16,6 +17,7 @@ const defaultContext: AppContextType = {
   addons: [],
   addonCategories: [],
   updateData: () => {},
+  fetchData: () => {},
 };
 
 export const AppContext = createContext<AppContextType>(defaultContext);
@@ -28,7 +30,7 @@ const AppProvider = (props: any) => {
   }, []);
 
   const fetchData = async () => {
-    const response = await fetch(`${config.apiUrl}/data`);
+    const response = await fetch(`${config.apiBaseUrl}/data`);
     const responseJson = await response.json();
     const { menus, menuCategories, addons, addonCategories } = responseJson;
     updateData({
@@ -41,7 +43,7 @@ const AppProvider = (props: any) => {
   };
 
   return (
-    <AppContext.Provider value={{ ...data, updateData }}>
+    <AppContext.Provider value={{ ...data, updateData, fetchData }}>
       {props.children}
     </AppContext.Provider>
   );
