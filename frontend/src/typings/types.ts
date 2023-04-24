@@ -1,9 +1,11 @@
 interface BaseType {
+  id?: number;
   name: string;
 }
 
 export interface Menu extends BaseType {
   price: number;
+  isAvailable?: boolean;
 }
 
 export interface MenuCategory extends BaseType {}
@@ -16,4 +18,8 @@ export interface Addon extends BaseType {
 
 export interface AddonCategory extends BaseType {
   isRequired: boolean;
+}
+
+export interface Location extends BaseType {
+  address?: string;
 }

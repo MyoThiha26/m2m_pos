@@ -5,6 +5,7 @@ import MenuCategories from "../components/MenuCategories";
 import Addons from "../components/Addons";
 import AddonCategories from "../components/AddonCategories";
 import Settings from "../components/Settings";
+import MenuDetail from "../components/MenuDetail";
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ export const router = createBrowserRouter([
   {
     path: "/menus",
     element: <Menus />,
+  },
+  {
+    path: "/menus/:menuId",
+    element: <MenuDetail />,
   },
   {
     path: "/menu-categories",

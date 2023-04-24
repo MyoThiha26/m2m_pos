@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Chip, TextField } from "@mui/material";
 import Layout from "./Layout";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../contexts/AppContext";
@@ -6,7 +6,11 @@ import { config } from "../config/config";
 import { Menu } from "../typings/types";
 
 const Menus = () => {
-  const [menu, setMenu] = useState<Menu>({ name: "", price: 0 });
+  const [menu, setMenu] = useState<Menu>({
+    name: "",
+    price: 0,
+    isAvailable: true,
+  });
   const { fetchData, menus } = useContext(AppContext);
 
   const createMenu = async () => {
@@ -17,6 +21,14 @@ const Menus = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(menu),
+    });
+    fetchData();
+  };
+
+  const deleteMenu = async (menuId?: number) => {
+    if (!menuId) return;
+    const response = await fetch(`${config.apiBaseUrl}/menus/${menuId}`, {
+      method: "DELETE",
     });
     fetchData();
   };
@@ -50,8 +62,17 @@ const Menus = () => {
         <Button variant="contained" onClick={createMenu}>
           Create
         </Button>
+        <Box sx={{ mt: 5 }}>
+          {menus.map((menu) => (
+            <Chip
+              key={menu.id}
+              label={menu.name}
+              sx={{ mr: 1 }}
+              onDelete={() => deleteMenu(menu.id)}
+            />
+          ))}
+        </Box>
       </Box>
-      {/* menus */}
     </Layout>
   );
 };
