@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../contexts/AppContext";
 import { config } from "../config/config";
 import { Menu } from "../typings/types";
+import { Link } from "react-router-dom";
 
 const Menus = () => {
   const [menu, setMenu] = useState<Menu>({
@@ -64,12 +65,13 @@ const Menus = () => {
         </Button>
         <Box sx={{ mt: 5 }}>
           {menus.map((menu) => (
-            <Chip
-              key={menu.id}
-              label={menu.name}
-              sx={{ mr: 1 }}
-              onDelete={() => deleteMenu(menu.id)}
-            />
+            <Link key={menu.id} to={`/menus/${menu.id}`}>
+              <Chip
+                label={menu.name}
+                sx={{ mr: 1, cursor: "pointer" }}
+                onDelete={() => deleteMenu(menu.id)}
+              />
+            </Link>
           ))}
         </Box>
       </Box>

@@ -7,16 +7,25 @@ import { Menu } from "../typings/types";
 import { config } from "../config/config";
 
 const MenuDetail = () => {
-  const { menus, ...data } = useContext(AppContext);
+  const { menus, menuLocations, ...data } = useContext(AppContext);
   const { menuId } = useParams();
   let menu: Menu | undefined;
   if (menuId) {
     menu = menus.find((menu) => menu.id === parseInt(menuId, 10));
+    if (menu) {
+      const menuLocation = menuLocations.find(
+        (item) => item.menus_id === menu?.id
+      );
+      if (menuLocation) {
+        menu.isAvailable = menuLocation.is_available;
+      }
+    }
   }
   const [newMenu, setMenu] = useState({ name: "", price: 0 });
 
   useEffect(() => {
     if (menu) {
+      console.log("menu", menu);
       setMenu({ name: menu.name, price: menu.price });
     }
   }, [menu]);

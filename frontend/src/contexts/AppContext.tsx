@@ -5,6 +5,7 @@ import {
   Location,
   Menu,
   MenuCategory,
+  MenuLocation,
 } from "../typings/types";
 import { createContext, useEffect, useState } from "react";
 
@@ -14,7 +15,7 @@ interface AppContextType {
   addons: Addon[];
   addonCategories: AddonCategory[];
   locations: Location[];
-  menuLocations: any[];
+  menuLocations: MenuLocation[];
   updateData: (value: any) => void;
   fetchData: () => void;
 }

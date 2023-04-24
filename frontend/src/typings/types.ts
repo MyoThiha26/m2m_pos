@@ -23,3 +23,10 @@ export interface AddonCategory extends BaseType {
 export interface Location extends BaseType {
   address?: string;
 }
+
+export interface MenuLocation {
+  id: number;
+  menus_id: number;
+  locations_id: number;
+  is_available: boolean;
+}
