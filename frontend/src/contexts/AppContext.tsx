@@ -1,5 +1,12 @@
 import { config } from "../config/config";
-import { Addon, AddonCategory, Menu, MenuCategory } from "../typings/types";
+import {
+  Addon,
+  AddonCategory,
+  Location,
+  Menu,
+  MenuCategory,
+  MenuLocation,
+} from "../typings/types";
 import { createContext, useEffect, useState } from "react";
 
 interface AppContextType {
@@ -7,6 +14,8 @@ interface AppContextType {
   menuCategories: MenuCategory[];
   addons: Addon[];
   addonCategories: AddonCategory[];
+  locations: Location[];
+  menuLocations: MenuLocation[];
   updateData: (value: any) => void;
   fetchData: () => void;
 }
@@ -16,6 +25,8 @@ const defaultContext: AppContextType = {
   menuCategories: [],
   addons: [],
   addonCategories: [],
+  locations: [],
+  menuLocations: [],
   updateData: () => {},
   fetchData: () => {},
 };
@@ -32,13 +43,22 @@ const AppProvider = (props: any) => {
   const fetchData = async () => {
     const response = await fetch(`${config.apiBaseUrl}/data`);
     const responseJson = await response.json();
-    const { menus, menuCategories, addons, addonCategories } = responseJson;
+    const {
+      menus,
+      menuCategories,
+      addons,
+      addonCategories,
+      locations,
+      menuLocations,
+    } = responseJson;
     updateData({
       ...data,
       menus: menus,
       menuCategories,
       addons,
       addonCategories,
+      locations,
+      menuLocations,
     });
   };
 
