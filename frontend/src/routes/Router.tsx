@@ -13,15 +13,15 @@ export const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "/locations/:locationId/menus",
+    path: "/menus",
     element: <Menus />,
   },
   {
-    path: "/locations/:locatioId/menus/:menuId",
+    path: "/menus/:menuId",
     element: <MenuDetail />,
   },
   {
-    path: "/locations/:locatioId//menu-categories",
+    path: "/menu-categories",
     element: <MenuCategories />,
   },
   {
