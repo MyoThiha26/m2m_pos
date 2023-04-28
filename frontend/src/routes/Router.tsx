@@ -4,6 +4,9 @@ import Menus from "../components/Menus";
 import MenuCategories from "../components/MenuCategories";
 import Addons from "../components/Addons";
 import AddonCategories from "../components/AddonCategories";
+import Settings from "../components/Settings";
+import MenuDetail from "../components/MenuDetail";
+import Locations from "../components/Locations";
 
 export const router = createBrowserRouter([
   {
@@ -11,8 +14,16 @@ export const router = createBrowserRouter([
     element: <App />,
   },
   {
+    path: "/locations",
+    element: <Locations />,
+  },
+  {
     path: "/menus",
     element: <Menus />,
+  },
+  {
+    path: "/menus/:menuId", // Dynamic Route
+    element: <MenuDetail />,
   },
   {
     path: "/menu-categories",
@@ -23,7 +34,11 @@ export const router = createBrowserRouter([
     element: <Addons />,
   },
   {
-    path: "/addon-categories",
+    path: "/addons-categories",
     element: <AddonCategories />,
+  },
+  {
+    path: "/settings",
+    element: <Settings />,
   },
 ]);
