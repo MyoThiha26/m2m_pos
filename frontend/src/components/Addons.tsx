@@ -18,7 +18,7 @@ const Addons = () => {
     setAddonCategory(event.target.value);
   };
   return (
-    <Layout>
+    <Layout title="Addon">
       <Box
         sx={{
           display: "flex",

@@ -1,54 +1,160 @@
-import { Box, BoxProps } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import Layout from "./Layout";
-import { Link } from "react-router-dom";
-
-function Item(props: BoxProps) {
-  const { sx, ...other } = props;
-  return (
-    <Box
-      sx={{
-        p: 1,
-        m: 1,
-        bgcolor: (theme) =>
-          theme.palette.mode === "dark" ? "#101010" : "grey.100",
-        color: (theme) =>
-          theme.palette.mode === "dark" ? "grey.300" : "grey.800",
-        border: "1px solid",
-        borderColor: (theme) =>
-          theme.palette.mode === "dark" ? "grey.800" : "grey.300",
-        borderRadius: 2,
-        fontSize: "0.875rem",
-        fontWeight: "700",
-        cursor: "pointer",
-        ...sx,
-      }}
-      {...other}
-    />
-  );
-}
+import { AppContext } from "../contexts/AppContext";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { Location } from "../typings/types";
 
 const Locations = () => {
+  const { locations, company, fetchData } = useContext(AppContext);
+  const accessToken = localStorage.getItem("accessToken");
+  const [newLocation, setNewLocation] = useState<Location>({
+    name: "",
+    address: "",
+    companyId: company ? company.id : "",
+  });
+  const [updatedLocations, setUpdateLocations] =
+    useState<Location[]>(locations);
+
+  useEffect(() => {
+    setUpdateLocations(locations);
+  }, [locations]);
+
+  const updateLocation = async (location: Location) => {
+    const locationId = location.id;
+    const oldLocation = locations.find((loc) => loc.id === locationId);
+    const newLocation = updatedLocations.find(
+      (updateLocation) => updateLocation.id === locationId
+    );
+    if (
+      oldLocation?.name !== newLocation?.name ||
+      oldLocation?.address !== newLocation?.address
+    ) {
+      await fetch(`http://localhost:5000/locations/${location.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(location),
+      });
+      fetchData();
+    }
+  };
+
+  const createLocation = async () => {
+    const isValid = newLocation.name && newLocation.address;
+    if (!isValid) return alert("Name and address are required.");
+    newLocation.companyId = company?.id;
+    const response = await fetch("http://localhost:5000/locations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(newLocation),
+    });
+    fetchData();
+    setNewLocation({ name: "", address: "" });
+  };
+
+  const deleteLocation = async (location: Location) => {
+    const response = await fetch(
+      `http://localhost:5000/locations/${location.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return fetchData();
+    }
+    alert(
+      "Cannot delete this location. Please delete menus associated with it first."
+    );
+  };
+
   return (
-    <Layout>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          p: 1,
-          m: 1,
-          bgcolor: "background.paper",
-          borderRadius: 1,
-        }}
-      >
-        <Link to="/menus/" style={{ textDecoration: "none" }}>
-          <Item>Insein KFC</Item>
-        </Link>
-        <Link to="/menus/" style={{ textDecoration: "none" }}>
-          <Item>Heledan KFC</Item>
-        </Link>
-        <Link to="/menus/" style={{ textDecoration: "none" }}>
-          <Item>Lan Ma Taw KFC</Item>
-        </Link>
+    <Layout title="Locations">
+      <Box sx={{ px: 2, mt: 5 }}>
+        {updatedLocations.map((location, index) => {
+          return (
+            <Box
+              sx={{ display: "flex", alignItems: "center", mb: 3 }}
+              key={location.id}
+            >
+              <Typography variant="h5" sx={{ mr: 1 }}>
+                {index + 1}.
+              </Typography>
+              <TextField
+                value={location.name}
+                sx={{ mr: 3 }}
+                onChange={(evt) => {
+                  const newLocations = updatedLocations.map(
+                    (updateLocation) => {
+                      if (updateLocation.id === location.id) {
+                        return { ...updateLocation, name: evt.target.value };
+                      }
+                      return updateLocation;
+                    }
+                  );
+                  setUpdateLocations(newLocations);
+                }}
+              />
+              <TextField
+                value={location.address}
+                sx={{ mr: 3, minWidth: 300 }}
+                onChange={(evt) => {
+                  const newLocations = updatedLocations.map(
+                    (updateLocation) => {
+                      if (updateLocation.id === location.id) {
+                        return { ...updateLocation, address: evt.target.value };
+                      }
+                      return updateLocation;
+                    }
+                  );
+                  setUpdateLocations(newLocations);
+                }}
+              />
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ mr: 2 }}
+                onClick={() => deleteLocation(location)}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => updateLocation(location)}
+              >
+                Update
+              </Button>
+            </Box>
+          );
+        })}
+      </Box>
+      <Box sx={{ px: 5.5, display: "flex", alignItems: "center", mb: 3 }}>
+        <TextField
+          placeholder="Name"
+          value={newLocation.name}
+          onChange={(evt) =>
+            setNewLocation({ ...newLocation, name: evt.target.value })
+          }
+          sx={{ mr: 3 }}
+        />
+        <TextField
+          placeholder="Address"
+          value={newLocation.address}
+          onChange={(evt) =>
+            setNewLocation({ ...newLocation, address: evt.target.value })
+          }
+          sx={{ mr: 3, minWidth: 300 }}
+        />
+        <Button variant="contained" onClick={createLocation}>
+          Create
+        </Button>
       </Box>
     </Layout>
   );

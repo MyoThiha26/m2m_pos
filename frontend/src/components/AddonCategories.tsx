@@ -17,7 +17,7 @@ const AddonCategories = () => {
     setIsRequired(event.target.value);
   };
   return (
-    <Layout>
+    <Layout title="Addon Categories">
       <Box
         sx={{
           display: "flex",

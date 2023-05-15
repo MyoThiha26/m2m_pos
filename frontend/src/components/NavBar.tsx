@@ -5,14 +5,14 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LunchDiningIcon from "@mui/icons-material/LunchDining";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
 import ClassIcon from "@mui/icons-material/Class";
 import CategoryIcon from "@mui/icons-material/Category";
-import MailIcon from "@mui/icons-material/Mail";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import {
   Divider,
   Drawer,
@@ -23,9 +23,10 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { AppContext } from "../contexts/AppContext";
 
 const sidebarMenuItems = [
-  { id: 1, label: "Locations", icon: <LocationOnIcon />, route: "/locations" },
+  { id: 1, label: "Orders", icon: <LocalMallIcon />, route: "/orders" },
   { id: 2, label: "Menus", icon: <LocalDiningIcon />, route: "/menus" },
   {
     id: 3,
@@ -38,13 +39,29 @@ const sidebarMenuItems = [
     id: 5,
     label: "Addon Categories",
     icon: <ClassIcon />,
-    route: "/addons-categories",
+    route: "/addon-categories",
   },
-  { id: 6, label: "Settings", icon: <SettingsIcon />, route: "/settings" },
+  {
+    id: 6,
+    label: "Locations",
+    icon: <LocationOnIcon />,
+    route: "/locations",
+  },
+  { id: 7, label: "Settings", icon: <SettingsIcon />, route: "/settings" },
 ];
 
-const NavBar = () => {
+interface Props {
+  title?: string;
+}
+
+const NavBar = ({ title }: Props) => {
+  const { locations } = useContext(AppContext);
+  const accessToken = localStorage.getItem("accessToken");
   const [open, setOpen] = useState<boolean>(false);
+  const selectedLocationId = localStorage.getItem("selectedLocation");
+  const selectedLocation = locations.find(
+    (location) => String(location.id) === selectedLocationId
+  );
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -67,7 +84,7 @@ const NavBar = () => {
         onKeyDown={toggleDrawer(false)}
       >
         <List>
-          {sidebarMenuItems.slice(0, 5).map((item) => (
+          {sidebarMenuItems.slice(0, 6).map((item) => (
             <Link
               key={item.id}
               to={item.route}
@@ -103,28 +120,41 @@ const NavBar = () => {
     );
   };
 
-  const pageTitle = sidebarMenuItems.find(
-    (item) => item.route === window.location.pathname
-  )?.label;
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            onClick={() => setOpen(true)}
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {pageTitle}
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              onClick={() => setOpen(true)}
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              {selectedLocation ? selectedLocation.name : ""}
+            </Typography>
+          </Box>
+          <Typography variant="h6" component="div">
+            {title || ""}
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Link
+            to={accessToken ? "/logout" : "/login"}
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            <Button color="inherit">
+              {accessToken ? "Log out" : "Log in"}
+            </Button>
+          </Link>
         </Toolbar>
       </AppBar>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>

@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { router } from "./routes/Router";
+import Router, { router } from "./routes/Router";
 import AppProvider from "./contexts/AppContext";
 
 const root = ReactDOM.createRoot(
@@ -12,8 +12,6 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <AppProvider>
-    <RouterProvider router={router} />
+    <Router />
   </AppProvider>
 );
-
-reportWebVitals();

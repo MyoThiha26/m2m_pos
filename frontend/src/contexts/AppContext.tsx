@@ -1,5 +1,13 @@
 import { config } from "../config/config";
-import { Addon, AddonCategory, Menu, MenuCategory } from "../typings/types";
+import {
+  Addon,
+  AddonCategory,
+  Company,
+  Location,
+  Menu,
+  MenuCategory,
+  MenuLocation,
+} from "../typings/types";
 import { createContext, useEffect, useState } from "react";
 
 interface AppContextType {
@@ -8,18 +16,20 @@ interface AppContextType {
   addons: Addon[];
   addonCategories: AddonCategory[];
   locations: Location[];
-  menuLocations: any[];
+  menuLocations: MenuLocation[];
+  company: Company | null;
   updateData: (value: any) => void;
   fetchData: () => void;
 }
 
-const defaultContext: AppContextType = {
+export const defaultContext: AppContextType = {
   menus: [],
   menuCategories: [],
   addons: [],
   addonCategories: [],
   locations: [],
   menuLocations: [],
+  company: null,
   updateData: () => {},
   fetchData: () => {},
 };
@@ -28,13 +38,20 @@ export const AppContext = createContext<AppContextType>(defaultContext);
 
 const AppProvider = (props: any) => {
   const [data, updateData] = useState(defaultContext);
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (accessToken) {
+      fetchData();
+    }
+  }, [accessToken]);
 
   const fetchData = async () => {
-    const response = await fetch(`${config.apiBaseUrl}/data`);
+    const response = await fetch(`${config.apiBaseUrl}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     const responseJson = await response.json();
     const {
       menus,
@@ -43,6 +60,7 @@ const AppProvider = (props: any) => {
       addonCategories,
       locations,
       menuLocations,
+      company,
     } = responseJson;
     updateData({
       ...data,
@@ -52,6 +70,7 @@ const AppProvider = (props: any) => {
       addonCategories,
       locations,
       menuLocations,
+      company,
     });
   };
 
